@@ -22,6 +22,8 @@ namespace MyBlog
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>()
+                        .Configure(config => config.UseStaticFiles())
+                        .UseWebRoot("public")
                         ;
                 });
     }
