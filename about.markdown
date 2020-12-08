@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-![profile picture](../profile_pic.png)
+![profile picture](/profile_pic.png)
 
 This is me, Sweeper! My profile pic is an imaginary element. I made it back in the days when I still loved chemistry. Oh those good old days... 
 
