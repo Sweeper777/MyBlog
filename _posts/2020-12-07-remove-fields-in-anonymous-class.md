@@ -1,6 +1,4 @@
 ---
-layout: so-post
-author: Sweeper
 categories: csharp
 op_link: https://stackoverflow.com/q/65178867/5133585
 op_profile_link: https://stackoverflow.com/users/12918011/kenny-smith
