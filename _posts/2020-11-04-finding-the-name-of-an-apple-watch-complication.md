@@ -13,6 +13,8 @@ OP found this gauge widget in [Apple's sample code](https://developer.apple.com/
 
 They want to know where the image for that gauge is stored.
 
+I did not know what a "complication" is before this, nor did I have any experience working with ClockKit.
+
 ### First Thoughts
 
 Immediately, I guessed that this is not an image, and it's probably not stored in the Asset Catalog like OP has thought. WatchKit probably draws the icon programmtically, so I am looking for a class that represents the icon. Maybe something like a `UIView` subclass, but for WatchKit, I thought.
