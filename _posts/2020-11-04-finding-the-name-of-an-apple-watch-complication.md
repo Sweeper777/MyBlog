@@ -1,5 +1,5 @@
 ---
-categories: swift
+tag: swift
 op_link: https://stackoverflow.com/q/64675063/5133585
 op_profile_link: https://stackoverflow.com/users/6449292/ahmadreza
 op_name: "Ahmadreza"

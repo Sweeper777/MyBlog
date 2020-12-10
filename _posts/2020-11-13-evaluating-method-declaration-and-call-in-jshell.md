@@ -1,5 +1,5 @@
 ---
-categories: java
+tag: java
 op_link: https://stackoverflow.com/q/64817719/5133585
 op_profile_link: https://stackoverflow.com/users/994387/rahman-usta
 op_name: "Rahman Usta"
