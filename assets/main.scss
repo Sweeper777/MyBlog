@@ -61,3 +61,12 @@ code.language-plaintext.highlighter-rouge {
 .site-nav .page-link {
     color: white;
 }
+
+@media screen and (max-width: 600px) {
+    .site-nav {
+        background-color: #3c3f41;
+        .menu-icon > svg {
+            fill: white;
+        }
+    }
+}
