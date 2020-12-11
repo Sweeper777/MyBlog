@@ -1,7 +1,10 @@
 ---
 ---
 
-@import "minima";
+@import
+  "minima",
+  "minima/syntax-highlighting"
+;
 
 .tag {
     border-radius: 10px;
