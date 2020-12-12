@@ -6,17 +6,20 @@
   "minima/syntax-highlighting"
 ;
 
-.tag {
+.tag, #tag-cloud a {
     border-radius: 10px;
     border-style: solid;
     padding: 5px;
     border-width: 2px;
     border-color: #ABABAB;
+    color: #ABABAB !important;
+    margin-left: 10px;
 }
 
-.tag:hover {
+.tag:hover, #tag-cloud a:hover {
     background-color: #ABABAB;
-    color: black;
+    color: black !important;
+    text-decoration: none;
 }
 
 body {
