@@ -1,5 +1,5 @@
 ---
-tag: java
+tags: java kotlin annotation
 op_link: https://stackoverflow.com/q/65191684/5133585
 op_profile_link: https://stackoverflow.com/users/10027592/starriet
 op_name: "starriet"
