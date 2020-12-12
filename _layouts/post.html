@@ -36,7 +36,7 @@ THE SOFTWARE.
         • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ page.author }}</span></span>
       {%- endif -%}
       {%- for tag in page.tags -%}
-          <span style="margin-left: 10px" class="post-meta tag">{{ tag | escape }}</span>
+      <a class="post-meta tag" href="/tag/{{ tag | cgi_escape | escape }}">{{ tag | escape }}</a>
         {%- endfor -%}
         </p>
   </header>
