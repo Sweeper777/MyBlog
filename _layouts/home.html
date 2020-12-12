@@ -43,7 +43,7 @@ THE SOFTWARE.
             {{ post.title | escape }}
           </a>
           {%- for tag in post.tags -%}
-          <span class="post-meta tag"> {{ tag | escape }} </span>
+          <a class="post-meta tag" href="/tag/{{ tag | cgi_escape | escape }}">{{ tag | escape }}</a>
           {%- endfor -%}
         </h3>
         {%- if site.show_excerpts -%}
