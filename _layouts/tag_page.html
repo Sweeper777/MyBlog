@@ -1,13 +1,24 @@
 ---
 layout: default
 ---
-<h2>{{ page.tag }}</h2>
-<ul>
-{% for post in page.posts %}
-  <li><a href="{{ post.url }}">{{ post.title }}</a> ({{ post.date | date_to_string }} | Tags: {{ post | tags }})</li>
-{% endfor %}
+<h2>Posts tagged <span class="tag" style="cursor: pointer;">{{ page.tag }}</span></h2>
+<ul class="post-list">
+  {% for post in page.posts %}
+  <li>
+    {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+    <span class="post-meta">{{ post.date | date: date_format }}</span>
+    <h3>
+      <a class="post-link" href="{{ post.url | relative_url }}">
+        {{ post.title | escape }}
+      </a>
+      {%- for tag in post.tags -%}
+      <a class="post-meta tag" href="/tag/{{ tag | cgi_escape | escape }}"> {{ tag | escape }} </a>
+      {%- endfor -%}
+    </h3>
+    {%- if site.show_excerpts -%}
+      {{ post.excerpt }}
+    {%- endif -%}
+    <hr>
+  </li>
+  {%- endfor -%}
 </ul>
-
-<div id="tag-cloud">
-  {{ site | tag_cloud }}
-</div>
