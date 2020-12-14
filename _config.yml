@@ -41,11 +41,14 @@ defaults:
   values:
     layout: so-post
     author: Sweeper
+    comments: true
 tag_page_layout: tag_page
 tag_page_dir: tag
 header_pages:
   - all_tags.html
   - about.markdown
+disqus: 
+  shortname: sweepersblog
 
 minima:
   date_format: "%F"
