@@ -1,3 +1,3 @@
 task "assets:precompile" do
-  exec("jekyll build")
+  exec("JEKYLL_ENV=production jekyll build")
 end
