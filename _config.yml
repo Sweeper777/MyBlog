@@ -25,7 +25,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   I write the behind-the-scenes stories of how I answer Stack Overflow questions,
   and whatever other stories of my (coding) life I want to share, I guess.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://sweepersblog.herokuapp.com" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  Sweeper777
 
 # Build settings
