@@ -13,6 +13,8 @@ var sjs = SimpleJekyllSearch({
   searchInput: document.getElementById('search-input'),
   resultsContainer: document.getElementById('results-container'),
   json: '/search.json',
-  searchResultTemplate: "<li><span class=\"post-meta\">{date}</span><h3><a class=\"post-link\" href=\"{url}\">{title}</a></h3><hr></li>"
+  searchResultTemplate: "<li><span class=\"post-meta\">{date}</span><h3><a class=\"post-link\" href=\"{url}\">{title}</a></h3><hr></li>",
+  limit: 50,
+  fuzzy: true
 })
 </script>
