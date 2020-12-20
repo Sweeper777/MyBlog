@@ -10,15 +10,21 @@ title: "Redundant '.self's"
 
 OP found that you can add `.self` to any expression in Swift, as many times as you like. They wonder repeating how many times is preferred.
 
+### Hypothesis
+
 My first reaction was that one should not use `.self` after an expression at all. This is different from the `.self` after a type name, which is the way to get a metatype object from a type name. `.self` after an expression is just redundant. 
 
 To argue that it is redundant, I need to show that the reason the feature exists is not to make your code look prettier or anything like that. I then thought that maybe this feature is just there for the completeness of other features. For example, I hypothesized that if `self` is a member of everything, then it is a key path of everything, which is the reason why the keypath expression `\.self` is valid.
+
+### Duplicate?
 
 But before I went any further, I suspected that this is a duplicate. `self` is a pretty common thing, so someone else probably asked about it before. I looked up `swift .self`, and found this [SO post](https://stackoverflow.com/q/26835013/5133585). That seems to be about the `self` used on its own or as a prefix, so I hesitated to close it. However, [one of the answers](https://stackoverflow.com/a/26835100/5133585) mentions a quote:
 
 > The self Property Every instance of a type has an implicit property called `self`, which is exactly equivalent to the instance itself. 
 
 That sounds like evidence for my hypothesis. I scrolled down to find out where the quote is from, as the source could mention reasons why this feature exists. I need the reason in anyway. The source is apparently a really old version (Swift 2) of the language guide. I went to the [current version](https://docs.swift.org/swift-book/LanguageGuide/TheBasics.html) and tried to find the quoted text, but can't find it anywhere. It seems like that part has been removed between now and then. :(
+
+### Checking the Language Reference
 
 Now that I am in the language guide, I thought I might as well check out what the [language *reference*](https://docs.swift.org/swift-book/ReferenceManual/AboutTheLanguageReference.html) has to say about `.self`. They are on the same site after all.
 
