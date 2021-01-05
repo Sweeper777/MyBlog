@@ -33,11 +33,17 @@ public class Test {
 
 OP is wondering why `a("");` produces a compiler error saying that `a` is inaccessible, but the other two calls are fine.
 
+### The Line Of Argument
+
 After some examination of the code, I saw that even though the `a` that OP wants to access is `private`, OP is still accessing it inside of `Test` (to be precise, `a` is being accessed inside of `Inner`, which is inside of `Test`), so there should be no accessibility problems. 
 
 Then I saw `Inner extends Test`, so there is also an inherited parameterless `a` in `Inner`. I realised the first call to `a();` calls `this.a();`, rather than `Test.this.a();`. Using the same logic, I thought, I could say the same for `a("");`: `a("");` tries to call `this.a("");` rather than `Test.this.a("");`. The reason that fails then becomes simple: there is no `a(String)` on `this`, since private methods are not inherited. But then I'd have to explain why `b();` succeeds (Why doesn't `b();` call `this.b();`, but `Test.this.b()`?).
 
+### Experimenting
+
 Before I went any further, I thought I would play around a bit, to see what are the changes I could make, to make `a("");` compile. As I found previously, I could make the call `Test.this.a("");`. I also found that removing `extends Test` will also make `a("");` compile, so it seems like the inherited parameterless `a` does play a part in this. I also tried renaming the `a(String)` overload to `f(String)`, and suddenly `f("");` compiles. I guessed that this has something to do with _names_, and this might also explain why `b();` refers to `Test.this.b();`.
+
+### Looking Up The Spec
 
 Without hesitation, I looked up the "names" section of the JLS. The first place I looked at was "[Simple Method Names](https://docs.oracle.com/javase/specs/jls/se14/html/jls-6.html#jls-6.5.7.1)", where it says:
 
@@ -62,6 +68,8 @@ Seems like shadowing is what I need. I then looked at when exactly is a method s
 > A declaration d of a method named n shadows the declarations of any other methods named n that are in an enclosing scope at the point where d occurs throughout the scope of d.
 
 Aha! This must be it! The inherited parameterless `a` shadows the two overloads of `a`s declared in `Test`, so only the inherited `a` is accessible.
+
+### Argument's Too Weak...
 
 When I started writing the answer, I realised that this quote:
 
