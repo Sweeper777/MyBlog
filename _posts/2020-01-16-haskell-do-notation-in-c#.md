@@ -49,6 +49,8 @@ var q = from v1 in nv1
 
 Unfortunately this produces an error.
 
+### Why Anonymous Type?
+
 After reproducing the error at [sharplab.io](https://sharplab.io), I noticed the error message says that some anonymous type is not a value type, so it does not fulfill the constraint for the type parameter `V` of `SelectMany`, that `V` has to be a value type. There are no anonymous types used in the source code, so I guessed that the compiler must have compiled the query expression to something that uses an anonymous type.
 
 To figure out exactly what code the compiler compiled the query expression into, I rewrote the query expression with arrays to make it actually _compile_:
@@ -81,6 +83,8 @@ Enumerable.SelectMany(Enumerable.SelectMany(source, new Func<int, IEnumerable<in
 
 Nevertheless, I read through the generated code, and noticed that there are indeed anonymous classes being created. I'd rather show a nicer version of the code in my answer, but I couldn't be bothered to clean up the generated code, so I decided to rewrite the query expression myself.
 
+### Rewriting in Dot Notation
+
 After much struggling, I came up with:
 
 {% highlight c# %}
@@ -91,6 +95,8 @@ var q =
 {% endhighlight %}
 
 This doesn't look the same as the generated code, but it doesn't matter. Here's why: while writing this, I realised that the need for an anonymous type arises because the parameter `f` in `SelectMany` only takes 2 parameters, but we are working with 3 (or potentially more!) `int?`s here. No matter what, we need a way to "clump" 2 values together to form "one" value so that it can be passed to `f`, and then decomposed again. An anonymous class seems to be what the compiler has chosen to use.
+
+### Tuples Workaround
 
 An alternative to anonymous types is `ValueTuple`s, which _are_ value types, and would have worked with `int?`s:
 
@@ -110,6 +116,8 @@ var q = from v1 in nv1
         from v3 in nv3
         select temp.v1 + temp.v2 + v3; 
 {% endhighlight %}
+
+### Last Nail in the Coffin
 
 This "using anonymous type to clump values" behaviour, which seemed like such an innocent little feature, has become really annoying in this situation, hasn't it? I wanted to find out whether this is specified behaviour, or whether it is compiler-dependent. After a quick read of the [Query Expressions](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/expressions#query-expressions) section of the language spec, it's not hard to find that this behaviour is specified, and specified in the clearest way possible...
 
