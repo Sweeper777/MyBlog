@@ -19,6 +19,8 @@ class Value<T> {
 
 However, they are not satisified and wanted to use this operator on any two `Value<T>` and `Value<U>`, where `T` and `U` can be different types.
 
+### Naïve attempt
+
 I thought, ok, you need another type parameter. Let's add that:
 
 {% highlight c# %}
@@ -28,6 +30,8 @@ class Value<T> {
 {% endhighlight %}
 
 I quickly tried that on dotnetfiddle, and nope, it didn't work. I got quite a lot of compiler errors telling me "`<some token>` expected". It seems like I have upset the parser with that, so I guess generic operators are not a thing then.
+
+### Operators Are Really Different
 
 Rather than just showing what doesn't compile, I thought I should show the syntax of user defined operators, which I think is more convincing. I navigated to the [Classes -> Operators](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/classes#operators) section of the language spec, and saw that the syntax of operator declarations are actually specified in a very different way from method declarations. Specifically, it's very restrictive, and almost has no optional parts, e.g.
 
@@ -75,6 +79,8 @@ parameter_array
 I had always thought their syntax would be a superset of that of method declarations, and the restrictions that applies to operator declarations would be specified not in the syntax, but through the prose in the spec.
 
 With such a limited syntax, operators certainly can't be generic.
+
+### A Stronger Argument
 
 Just when I was about to write my answer, I started to feel that "operators can't be generic" isn't that strong of an argument, because making the operator generic might not be the only way to achieve what the OP wants. To show that this is impossible, I need to find some feature that a solution _must_ make use of, and show that feature is not available for operators.
 
