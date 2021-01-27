@@ -34,6 +34,8 @@ System.out.println(new URL(new URL("http://asdf.com"), "a/b/c")); // http://asdf
 
 The results basically shows what the OP has found out already - the last path component is being removed. From these results, I'm pretty confident that the first parameter (`context`) is basically the "base URL" of the second parameter `spec`. Now I just need to show that the `z` being removed is expected behaviour, or a bug.
 
+### Searching the Docs
+
 To show that either is the case, I need some documentation. OP has included the link to the [JavaDoc](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URL.html#%3Cinit%3E(java.net.URL,java.lang.String)) in their question, which was super helpful. Going through it, I reached the point where it said:
 
 > Otherwise, the path is treated as a relative path and is appended to the context path, as described in RFC2396.
@@ -56,6 +58,8 @@ Following the steps in that section, I got to (emphasis mine):
 string.
 
 So getting rid of the `z` is actually expected behaviour! By reading that, I also thought of a way to keep the `z` - simply add another `/` at the end, so that the last path segment is `""`, so that nothing is ignored.
+
+### My Paranoia
 
 Just to be extra safe, I tested a similar code snippet in Swift:
 
