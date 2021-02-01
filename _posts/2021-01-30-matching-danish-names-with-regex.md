@@ -14,7 +14,7 @@ In the code they showed, they are using `String.range(of:options:locale)` to mat
 {% highlight swift %}
 func isUserNameValid(userName: String, locale: Locale) -> Bool {
     return userName.range(
-        of: "(?mi)^[a-z](?!(?:.*\.){2})(?!(?:.* ){2})(?!.*\.[a-z])[a-z. ]{1,}[a-z]$",
+        of: "(?mi)^[a-z](?!(?:.*\\.){2})(?!(?:.* ){2})(?!.*\\.[a-z])[a-z. ]{1,}[a-z]$",
         options: .regularExpression,
         range: nil,
         locale: locale) != nil
@@ -23,7 +23,7 @@ func isUserNameValid(userName: String, locale: Locale) -> Bool {
 
 They also ask whether `range(of:options:locale:)` take into account the `locale` parameter, and detects "special language characters" automatically.
 
-### `range(of:options:locale)`
+### range(of:options:locale)
 
 I decided to answer the question about `range(of:options:locale:)` first, as I thought a quick read of its [documentation](https://developer.apple.com/documentation/foundation/nsstring/1417348-range) should reveal the answer. I knew the `locale` parameter is used for locale-sensitive string comparisons, but I was not sure whether it is still taken into account if it were a regex. The docs for the `locale` parameter said:
 
