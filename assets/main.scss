@@ -138,3 +138,19 @@ blockquote {
 #tag-cloud .set-5 {
     font-size: 32px;
 }
+
+table tr:nth-child(even) {
+    background-color: #2C2F30;
+}
+
+table th {
+    background-color: #2C2F30;
+    border: 1px solid #dedede;
+    border-bottom-color: #c9c9c9;
+}
+
+table {
+    color: white;
+    width: auto;
+    display: inline-block;
+}
