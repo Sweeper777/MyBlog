@@ -22,9 +22,13 @@ public struct Nullable<T> where T : struct {
 }
 {% endhighlight %}
 
+### Nullable<T> Doesn't Declare Operators!?
+
 I was a bit surprised at the fact that despite not declaring any user-defined operators, I can still use `==` on `Nullable<T>` too. I thought this has to be some compiler magic. Just when I wanted to go check the language spec, someone posted an [answer](https://stackoverflow.com/a/66701099/5133585). 
 
 This actually saved me a lot of time. I didn't know where to start searching for in the language spec, but the link in that answer directly pointed me to "[Lifted Operators](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/nullable-value-types#lifted-operators)". I remember coming across this term [when I was looking stuff up about how operator overload resolution works](/2021/02/11/overload-resolution-implicit-conversions.html), but I didn't pay much attention to it at that time and forgot about it.
+
+### Oh! Lifted Operators
 
 I went to the corresponding section in the language spec (the link in the answer points to a C# reference page, not the language spec, and I prefer the latter), and found that the lifted operators applies the regular, non-lifted versions of the operators if both operands are not null. This means that OP's assumption that `==` on nullable types calls `object.Equals` is incorrect. Then I thought, now that I've invalidated their assumption, OP is definitely going to ask "how exactly are lifted operators implemented then?"
 
@@ -37,6 +41,8 @@ Apparently for two `int?`s `a` and `b`, `a == b` implemented as
 {% endhighlight %}
 
 Just as I expected, not very interesting.
+
+### Re-implementing With User-defined Operator
 
 At that point, I kind of accepted the fact that `Nullable<T>` doesn't declare any operators as one of those design decisions made by the language design team that we will never know the reason why. I thought I would show OP how to write a user-defined operator that does follow the spec, just to show that it can be done, but the language team didn't choose to do it this way.
 
