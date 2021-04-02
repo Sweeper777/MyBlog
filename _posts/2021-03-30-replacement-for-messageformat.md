@@ -17,11 +17,15 @@ MessageFormat.format("String: {0}, Number: {1}, Date: {2}", "Hello", 123, new Da
 
 However, it doesn't support `java.time` types such as `LocalDate`. It simply calls `toString` on it, and the locale applied to the `MessageFormat` has no effect on the formatting.
 
+### What's MessageFormat?
+
 This is the first time I've seen the `MessageFormat` class. I didn't know the Java Standard Library had such a thing until this day. I initially thought it was part of some popular library. I looked at its [documentation](https://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html), hoping that I can find a way to _make it_ support `LocalDate` after working out how it works.
 
 Although it provides quite a lot of ways for customisation, like `ChoiceFormat`, different date and number styles and all that kind of cool stuff, it is stuck on using `DateFormat`/`SimpleDateFormat` to format dates, and there is no way to change that to something like `DateTimeFormatter`.
 
 ![MessageFormat uses DateFormat and SimpleDateFormat](/assets/2021-03-30/1.png)
+
+### Surely This Has Been Asked Before...
 
 Having seen this, I ran out of ideas. Then I thought, `java.time` has been there for a while now, people has definitely noticed that `MessageFormat` doesn't support `java.time`. OP surely isn't the first one to have this question, so I googled `messageformat java.time`, and the first result starts with:
 
@@ -39,6 +43,8 @@ The first one seems more relevant, so I went to the first one, whose link can be
 Then I am delighted to see that the bug is marked "resolved", and the resolution is "won't fix". Great! That means there's probably a replacement for it. I scrolled down and saw a comment explaining that:
 
 > The `MessageFormat` is designed to work with `java.text.Format` classes, so it uses `DateFormat`/`SimpleDateFormat` to format date/time. Providing support for `java.time.format.DateTimeFormatter` to format `java.time` types (`TemporalAccessors`) may complicate the `MessageFormat` API. It is always recommended to use `java.util.Formatter` which provides support for formatting `java.time` types.
+
+### Using Formatter
 
 I thought I'd work out how to use `Formatter` exactly, and add an example of using it in my answer, rather than only dumping that quote and calling it a day.
 
