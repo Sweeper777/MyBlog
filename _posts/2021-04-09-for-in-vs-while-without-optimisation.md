@@ -32,6 +32,8 @@ print(sum)
 
 and asks why this is the case.
 
+### I Know This!
+
 I knew right of the bat why this is the case, but just to confirm it, I went to [godbolt.org](https://godbolt.org) and compared the assembly code when compiling without any options versus with `-O`, versus the while loop. Most of it I couldn't understand, but I could see that the unoptimised version has a bunch of `IndexingIterator`s lying around, so my suspicion was probably right - the for loop is turned into something like this:
 
 {% highlight swift %}
@@ -43,6 +45,8 @@ while let next = iterator.next() {
 {% endhighlight %}
 
 and `iterator.next` is probably the expensive operation here. 
+
+### What Does next Do?
 
 I felt like I have to explain _why_ `next` is expensive, so I tried to look for its source code. I first looked for `Range.swift` since its `Range`'s iterator. It'll probably be in the same file, I thought. I did a text search for "next" on that page, and found [line 693](https://github.com/apple/swift/blob/main/stdlib/public/core/Range.swift#L693):
 
@@ -56,6 +60,8 @@ public mutating func next() -> Bound? {
 Without thinking too much, I added that to my answer. I didn't check whether it's actually doing a lot of work as I wanted to be the first to answer.
 
 I also noted that `next` is a protocol method, and from an [article](https://medium.com/@venki0119/method-dispatch-in-swift-effects-of-it-on-performance-b5f120e497d3) that I read a while back, I learned that protocol methods use table dispatch, which is slower than static dispatch.
+
+### Mistake #1
 
 After posting the answer, I read through it again and realised that `next` isn't actually doing much. It's just calling `advanced(by:)`! Sure, `advanced(by:)` is also table dispatched, but I would have expected `next` to do a lot more than that, e.g. checking the bounds. Then I realised that this isn't even the iterator for `Range`. This is the iterator for `PartialRangeFrom`!
 
@@ -77,6 +83,8 @@ public mutating func next() -> Elements.Element? {
     return element
 }
 {% endhighlight %}
+
+### Mistake #2
 
 Just to be sure, I thought, I'll do a time profile of this, and experimentally show that `next` _is_ actually doing a lot of work. This time profile ended up causing OP to ask [another quesiton](https://stackoverflow.com/questions/67032783/why-is-indexingiterator-next-using-dynamic-dispatch), which made me realise my second mistake - `next` is statically dispatched!
 
