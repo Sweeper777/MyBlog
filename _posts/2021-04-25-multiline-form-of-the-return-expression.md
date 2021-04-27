@@ -25,6 +25,8 @@ fun check_plain(supplier: Supplier<String?>) {
 }
 {% endhighlight %}
 
+### Kotkin Has Return Expressions? Nice!
+
 My first thought was, ah, `return` in Kotlin is an _expression_ rahter than a statement, which is why something like:
 
 {% highlight kotlin %}
@@ -37,6 +39,8 @@ I looked up "kotlin 'return expression'" just to confirm this, and found [this t
 
 Then I thought about the _type_ of the return expression. Since it is an expression, it gotta have a type. Since I can put `return` where a `String` is expected, I thought that `return` can have any type, and its type is automatically inferred by context. This means that its type only depends on the expressions around it, but not the expression that is returned! (Later I checked the spec to see that its type is actually `Nothing`, but the conclusion that it doesn't depend on the type of expression returned still holds)
 
+### Easy Solution
+
 This means that I can write `return <anything>`, and `return` will still work as the right hand side of `?:`. Well, why not
 
 {% highlight kotlin %}
@@ -48,6 +52,8 @@ fun check_plain(supplier: Supplier<String?>) {
 I didn't have any logging frameworks installed, so I tested this with `print` instead, and it works!
 
 However, I realised that this only works because the return type of `logger.info` matches the return type of `check_plain`, and there is only one statement to run. What if that wasn't the case?
+
+### Let's Try Harder
 
 I started experimenting. First I looked at OP's attempt:
 
@@ -77,6 +83,8 @@ That gave an error that OP mentioned in the question:
 
 > 'return' is not allowed here
 
+### IntelliJ's Insightful Quick Fix
+
 IntelliJ also says that this is a case of "Redundant lambda creation" and offers a quick fix. I tried the quick fix, and it produced:
 
 {% highlight kotlin %}
@@ -101,7 +109,9 @@ fun check_plain(supplier: Supplier<String?>) {
 
 Indeed, this worked, but I'm not satisfied. This looks like a trick more than anything. "return run" doesn't read well. What does that even mean?
 
-I want to know what's so special about "here" as in "'return' is not allowed _here_", so I went to the [spec](https://kotlinlang.org/spec/expressions.html#return-expressions) and checked. Apparently,
+### What's So Special About 'Here'?
+
+I want to know _why_ "'return' is not allowed _here_", so I went to the [spec](https://kotlinlang.org/spec/expressions.html#return-expressions) and checked. Apparently,
 
 > If a return expression is used in the context of a lambda literal which is not inlined in the current context and refers to any function scope declared outside this lambda literal, it is disallowed and should result in a compile-time error.
 
