@@ -25,7 +25,7 @@ fun check_plain(supplier: Supplier<String?>) {
 }
 {% endhighlight %}
 
-### Kotkin Has Return Expressions? Nice!
+### Kotlin Has Return Expressions? Nice!
 
 My first thought was, ah, `return` in Kotlin is an _expression_ rahter than a statement, which is why something like:
 
