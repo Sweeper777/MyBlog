@@ -39,6 +39,8 @@ private void merge(int p, int q, int r) {
 }
 {% endhighlight %}
 
+### No Iterators Huh?
+
 The most common CME questions are asked by people who get CMEs because they are iterator through a list, and removing things from the list:
 
 {% highlight java %}
@@ -49,6 +51,8 @@ for (var thing: list) {
 
 But this one has no iterators at all! It must be something else then.
 
+### Semantics of Sublists
+
 The first thing I saw was `subList`, I recalled that `subList` produces a "view" of the original list, rather than a copy, so that might be causing the concurrent modification. I did a thought experiment: if I have two "views", and I modify one of them, the other one wouldn't know. When I try to do another modification on the other one, it notices that the list has been modified without it knowing, and goes crazy (throws CME). Then I thought, iterators are also "views" on lists, so in this regard, sublists are kind of like iterators, aren't they?
 
 My thought experiment seems like something that could very well happen. Now I just need to find the bit of documentation that specifies it. This is quite easy. The [documentation](https://docs.oracle.com/javase/8/docs/api/java/util/List.html#subList-int-int-) says:
@@ -56,6 +60,8 @@ My thought experiment seems like something that could very well happen. Now I ju
 > The semantics of the list returned by this method become undefined if the backing list (i.e., this list) is structurally modified in any way other than via the returned list. 
 
 So it doesn't explicitly say "CME", but "undefined" is close enough, I guess. If it is undefined, then CME is definitely one of those things that could happen.
+
+### Reproducing The CME
 
 I tried to make a minimal code snippet to reproduce the exception. I started with OP's code, but with all the non-list operations removed (also changed the list to a list of strings):
 
@@ -81,6 +87,8 @@ left.get(0);
 {% endhighlight %}
 
 Having figured this out, I was ready to write an answer.
+
+### There's Still An Error!?
 
 After posting the answer however, OP said that my solution (make copies of the sublist) didn't work - the stack trace is the same. I thought that's not possible. There couldn't possibly still be a CME anymore. There must be something wrong with the OP's merge sort algorithm. I wanted OP to accept my answer, so I tried to reproduce the entire merge sort algorithm in my IDE. I had to change it to sort a list of integers, rather than a list of `Product`s.
 
