@@ -25,7 +25,11 @@ func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange
 
 But this didn't work.
 
+### How Romaji Keyboards Work
+
 I can immediately see why that would not work. The way the Romaji keyboard works is, you type latin letters, and the keyboard (IME) will gradually change those letters into Hiragana. It will also give you a list of things that can be spelled with what you already typed, and you can tap on one of the options to replace what you already typed with that option. That list of things will include the Katakana counterparts of the Hiragana you typed, and that is how you type Katakana. So to type Katakana with the Romaji keyboard, you must be allowed to type Latin letters and Hiragana, otherwise you can't type Katakana at all. OP's code literally only allows Katakana to be entered.
+
+### Fixing the Code With markedTextRange
 
 I copied and pasted OP's attempt into Xcode to start doing some trial and error. That is when I realised OP also didn't check the length of the resulting string, so I immediately added that check. I also didn't like `rangeOfCharacter` for some reason, and changed to use `contains`.
 
@@ -47,7 +51,11 @@ return (newString.count == 1 && katakanas.contains(newString.first!))
     || textField.markedTextRange != nil
 {% endhighlight %}
 
-I still can't type any non-Katakana! I used the debugger to see what's wrong. Apparently, when I start typing the first character, `shouldChangeCharactersInRange` gets called, but at that point, `markedTextRange` is nil, not (0, 1)! I guess this is understandable, as `shouldChangeCharactersInRange` is meant for asking the delegate "should I change this?" _before actually changing the text_, so naturally `markedTextRange` wouldn't change. I wish I can get more information about what this incoming change, like how it would change `markedTextRange` etc, in `shouldChangeCharactersInRange`, but alas that's not available.
+I still can't type any non-Katakana! I used the debugger to see what's wrong. 
+
+Apparently, when I start typing the first character, `shouldChangeCharactersInRange` gets called, but at that point, `markedTextRange` is nil, not (0, 1)! I guess this is understandable, as `shouldChangeCharactersInRange` is meant for asking the delegate "should I change this?" _before actually changing the text_, so naturally `markedTextRange` wouldn't change. I wish I can get more information about what this incoming change, like how it would change `markedTextRange` etc, in `shouldChangeCharactersInRange`, but alas that's not available.
+
+### How About EditingChanged?
 
 I then tried to listen for the `editingChanged` control event. I know that will happen _after_ the text has been changed, so `markedTextRange` is probably also updated too.
 
@@ -61,7 +69,11 @@ I then tried to listen for the `editingChanged` control event. I know that will 
 }
 {% endhighlight %}
 
-Since the text has already been changed, it's quite hard to revert back to the previous version, so I could do is to set it to empty when the text is not a Katakana... Then I realised that with this design, if you enter a Katakana, then starts to enter some other rubbish, the entire text would be deleted. Therefore, I added some code in `shouldChangeCharactersInRange` to disallow the user from entering any more characters when the text is already valid:
+Since the text has already been changed, it's quite hard to revert back to the previous version, so I could do is to set it to empty when the text is not a Katakana... Then I realised that with this design, if you enter a Katakana, then starts to enter some other rubbish, the entire text would be deleted. 
+
+### Other Extensions
+
+Therefore, I added some code in `shouldChangeCharactersInRange` to disallow the user from entering any more characters when the text is already valid:
 
 {% highlight swift %}
 if let firstChar = textField.text?.first,
