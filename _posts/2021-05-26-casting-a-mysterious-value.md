@@ -21,11 +21,15 @@ let value = data["0"] as! Int
 
 They also noted that `data` is not a valid JSON object according to `JSONSerialization`.
 
+### Is This Even Possible?
+
 I was very confused at first. How is `["0": 1]` _not_ a valid JSON object? It clearly is! I thought maybe `data` isn't actually a dictionary, and `["0": 1]` is just the custom description of that type, or something the OP made up, based on what they think they should get.
 
 So I asked the OP what type `data` is and where it comes from, and they said it's `[String: Any]`. Immediately I got more confused, but then I saw that they edited the question to include where they got this from. Apparently, it's from a `Promise<[String: Any]>`, and that is in turn from a library called web3swift. Very helpfully, they also provided a link to the source code of the method that they are calling.
 
 Alright! Guess I'll do some digging then.
+
+### Digging Through The Code
 
 OP's link pointed me to [`callPromise`](https://github.com/skywinder/web3swift/blob/5484e81580219ea491d48e94f6aef6f18d8ec58f/Sources/web3swift/Web3/Web3%2BReadingTransaction.swift#L32), which is a method that returns a `Promise<[String: Any]>`:
 
@@ -106,6 +110,8 @@ case .function:
     ...
 }
 {% endhighlight %}
+
+### Aha!
 
 The only possible cases for `1` are `uint` and `int`. I don't think a `1` would be decoded in any of the other cases, so that `1` that I saw at the beginning is actually a `BigUInt` or a `BigInt`.
 
