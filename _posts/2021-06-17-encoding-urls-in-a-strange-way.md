@@ -16,9 +16,13 @@ urlStr.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
 
 only produces the percent-encoded form.
 
+### What's This Called Again?
+
 Just a few days before answering this question, I watched a YouTube video about recognising scam emails, and I've seen something similar to that format in that video. The context was about how scammers can buy domain names that has Unicode characters that look very similar to legit domain names, and only few email software detect this and warns the user about this effectively. It was mentioned that many web browsers display these domain names in a different format to distinguish them from pure ASCII domain names, and that format was very similar to what the OP is asking here. The name of the format was mentioned, but I could not remember what it is no matter how hard I try. It's literally at the tip of my tongue though.
 
 I looked up "domain name encoding" on Google and the second result was the Wikipedia page for [Punycode](https://en.wikipedia.org/wiki/Punycode). I thought, yes! That's what it's called! Punycode!
+
+### Generating Punycode
 
 I immediately googled ways to generate Punycode in Swift, and found [PunycodeSwift](https://github.com/gumob/PunycodeSwift). In one of the examples there, I saw:
 
@@ -31,6 +35,8 @@ print(sushi)  // xn--sprr0q
 
 That seems like exactly what OP wants! The property is called `idnaEncoded`, not "Punycode", which got me a bit confused, but as far as I was concerned, doing `"zerø".idnaEncoded` should produce `xn--zer-2na`.
 
+### Confused
+
 But what about `info`? Looking at the "Examples" section on the wiki page, it should have a `-` suffix! (At this point I kind of just assumed that the transformation is applied to each dot-separated component in order) Maybe the transformation is optional for ASCII-only components? I tried putting `xn--zer-2na.info-` into the address bar of my browser, but it didn't recognise it as a URL. Maybe not then...
 
 I continue reading the wiki page for Punycode, and saw the "Internationalised Domain Names" section:
@@ -40,6 +46,8 @@ I continue reading the wiki page for Punycode, and saw the "Internationalised Do
 That kind of confused me even more. So the actual Punycode for `zerø` is only `zer-2na`, and the `xn--` part is just a constant prefix? I still don't know why `info` stays as `info`. Is it because it's the TLD, and the transformation only applies to non-TLDs? That would mean TLDs can't have Unicode, which I wasn't quite sure about.
 
 I then saw that the "Internationalised Domain Names" section has a main article - [Internationalized domain name](https://en.wikipedia.org/wiki/Internationalized_domain_name), which, my god, is filled with answers to my questions.
+
+### IDNA Encoding
 
 It has a section called "ToASCII and ToUnicode". I thought it would describe in detail how the encoding process is done. 
 
