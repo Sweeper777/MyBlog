@@ -19,6 +19,8 @@ myTextView.text = textLines.joinToString("\n")
 
 However, CMEs still get thrown _sometimes_. They understand that they should use a thread safe collection, but wonders why cloning the array list doesn't work.
 
+### Maybe Cloning Involves Iteration?
+
 Initially, I thought `clone` calls `iterator` and iterates through the array list too, so the fact that you are "iterating and modifying at the same time" doesn't change. I looked into the source code of `clone` to confirm this, but to my surprise, it doesn't loop through the array list at all:
 
 {% highlight java %}
@@ -39,6 +41,8 @@ Also, if what I thought were true, CMEs would happen every time, not _sometimes_
 
 Okay, so it is not that. My next approach was the stack trace. The stack trace that the OP has provided mentions nothing about cloning, so I thought it was a stack trace for when the list is not cloned. I asked the OP for the stack trace for when the list _is_ cloned, but they said the posted stack trace _is_ exactly that! I became very confused.
 
+### Checking For Comodification
+
 Last time I was answering a CME question, I found this `checkForComodification` method that can potentially throw a CME. 
 
 {% highlight java %}
@@ -50,7 +54,11 @@ final void checkForComodification() {
 
 I tried to think of situations where `checkForComodification` could throw a CME, but soon I realised that the problem can't be here. `modCount` of the new list is set to 0 when cloning, and after that the new list is not modified again, so it is very obvious that `modCount` will always stay expected.
 
-I looked at the stack trace again and realised that the top was `Itr.next`, so it is impossible that `checkForComodification` threw the exception. I went to `Itr.next` and saw that there is only one line that throws a CME:
+I looked at the stack trace again and realised that the top was `Itr.next`, so it is impossible that `checkForComodification` threw the exception. 
+
+### Iter.next Was The Culprit!
+
+I went to `Itr.next` and saw that there is only one line that throws a CME:
 
 {% highlight java %}
 public E next() {
