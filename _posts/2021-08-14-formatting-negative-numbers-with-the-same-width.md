@@ -21,11 +21,15 @@ The problem with this is that the numbers are not the same width. There would be
 0001
 ```
 
+### Looking for a Custom Format Specifier
+
 At first, I thought that's quite a weird requirement, but I guess I'll give it a try. I went straight to the [custom number format specifiers](https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings) page because I doubted there is such a specialised standard format specifier for this. I wanted to look for something like a "negative sign specifier `-`", that lets me say "if the number is negative, put a negative sign there, otherwise put a 0 there". Then the format would just be
 
 ```none
 -000
 ```
+
+### The Semicolon
 
 But there isn't such a thing :( But as I read through the list of available specifiers, I found an unfamiliar one - `;`. I know roughly what all the other speciiers (`0`, `#`, `.`, `,`, `%`, `‰`, `e`, `\\`) does, except `;`, and it's apparently called a "section speciier". This name has almost nothing to do with negative numbers, which almost made me ignore it.
 
@@ -48,6 +52,8 @@ d04;d03
 But that isn't recognised as a valid format specifier. It seems like I can't mix standard and custom format specifiers :(
 
 Therefore, I thought I'd include in my answer the special things that `D` does, that `0000;-000` doesn't do. After having a look at the [docs](https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#decimal-format-specifier-d), the only special thing that `D` does is that it uses the `NegativeSign` of the current `NumberFormatInfo`. That's a super duper minor thing IMO, but I'll mention it just to be safe, I thought.
+
+### Aw, Another XY Problem!
 
 Then I had a look at the comments, where OP had said that the reason why they were trying to do this were because they want to sort some strings, and they want to "line things up". I thought, well, in that case, you could just use the _alignment_ specifier!
 
