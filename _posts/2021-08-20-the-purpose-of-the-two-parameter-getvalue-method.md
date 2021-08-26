@@ -19,6 +19,8 @@ operator fun <V, V1 : V> Map<in String, V>.getValue(
 
 and wonders what its purpose is.
 
+### That Looks Really Weird!
+
 This is the first time that I have seen this `Map` method, and I was quite confused as to what it does too. Its two parameters don't make too much sense in the context of a `Map`, and somehow this only applies to `Map`s that has _strings_ as keys. The generics is also a bit weird, it can return any subtype of the map's value type!
 
 I first read the description in the documentation:
@@ -33,6 +35,8 @@ Okay, so I guess "given object" refers to the `thisRef` parameter? My guess didn
 
 "Not used"? Then how is this method going to "return the value of the property for the given object" if it doesn't even know what "the given object" is?
 
+### The Source Code
+
 Fortunately, Kotlin's standard library is open source, so I clicked on the source link in the documentation to see exactly whst `getValue` does:
 
 {% highlight kotlin %}
@@ -41,6 +45,8 @@ public inline operator fun <V, V1 : V> Map<in String, @Exact V>.getValue(thisRef
 {% endhighlight %}
 
 From the implementation, I could see that it is basically doing the same thing as `map[property.name]`, except it uses the implicit default and also casts to the type argument `V1`. This explains why `thisRef` is ignored, but the purpose of this function is still a mystery. Why would someone pass in a `KProperty` to this function, just to access the value associated with that property's name? If they wanted to do that, they could have just did `map[property.name]` rather than `map.getValue(null, property)`, which is a lot longer. The ignored `thisRef` could also be removed if the sole purpose of `getValue` was to access maps with a `KProperty`.
+
+### This Is An Operator
 
 Then I noticed that this is an _operator_ function, which means that there exists a way to call it without using its name, like how the syntax `foo[x]` just translates to a call to the `get` operator: `foo.get(x)`. Similarly, `a + b` translates to a call to the `plus` operator: `a.plus(b)`. I just need to find out what syntax translates to `someMap.getValue(x, y)`. That syntax would probably be the "idiomatic" way to use `getValue`, just like how `foo[x]` is more idiomatic than `foo.get(x)`.
 
@@ -51,6 +57,8 @@ So I looked up "kotlin overloadable operators" on Google and found [this page](h
 > `provideDelegate`, `getValue` and `setValue` operator functions are described in [Delegated properties](https://kotlinlang.org/docs/delegated-properties.html).
 
 Oh! Property delegates! That was when everything made sense to me. `getValue` is one of those methods that you have to write, when you are writing your own property delegate. So the purpose of this `getValue` function is "to allow `Map` to be used as a property delegate". This explains why `thisRef` is unused - `thisRef` is only there because the `getValue` operator required it.
+
+### Why Use Maps As Property Delegates?
 
 I still have one more thing that I'm unsure about though. Why would you ever want to use a map as a property delegate? I tried coming up with a usage example of using a map as a property delegate:
 
